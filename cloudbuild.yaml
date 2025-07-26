@@ -1,0 +1,21 @@
+steps:
+  # Build the Docker image
+  - name: 'gcr.io/cloud-builders/docker'
+    args: 
+      - 'build'
+      - '-f'
+      - 'docker/Dockerfile'
+      - '--target'
+      - 'production'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/arxiv-paper-collector'
+      - '.'
+  
+  # Push the image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: 
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/arxiv-paper-collector'
+
+images:
+  - 'gcr.io/$PROJECT_ID/arxiv-paper-collector' 

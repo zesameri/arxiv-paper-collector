@@ -1,0 +1,33 @@
+# Google Cloud Environment Variables Template
+# Copy these values and update them for your deployment
+
+# Basic Django Configuration
+DEBUG=False
+SECRET_KEY=your-generated-secret-key-here
+ALLOWED_HOSTS=your-cloud-run-url.run.app,your-custom-domain.com
+
+# Database Configuration (Cloud SQL)
+DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@//cloudsql/zesameri:us-central1:arxiv-papers-db/arxiv_papers
+
+# Paper Collection Configuration
+PUBMED_EMAIL=your-email@gmail.com
+
+# CORS Configuration (for frontend)
+CORS_ALLOWED_ORIGINS=https://your-frontend-domain.com,https://your-cloud-run-url.run.app
+
+# Logging Configuration
+DJANGO_LOG_LEVEL=INFO
+
+# Google Cloud Configuration
+GCP_PROJECT_ID=zesameri
+GCP_STORAGE_BUCKET=zesameri-arxiv-papers-static
+
+# Security Headers (automatically handled by Cloud Run)
+SECURE_SSL_REDIRECT=True
+SECURE_BROWSER_XSS_FILTER=True
+SECURE_CONTENT_TYPE_NOSNIFF=True
+
+# Example gcloud command to set environment variables:
+# gcloud run services update arxiv-paper-collector \
+#   --region=us-central1 \
+#   --set-env-vars="DEBUG=False,SECRET_KEY=your-key,DATABASE_URL=your-db-url" 

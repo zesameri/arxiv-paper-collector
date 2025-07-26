@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "A comprehensive tool for systematically collecting and analyzing academic papers to understand research networks, collaborations, and institutional relationships."
 authors = ["Your Name <your.email@example.com>"]
 readme = "README.md"
+package-mode = false
 
 
 [tool.poetry.dependencies]
@@ -24,6 +25,18 @@ ratelimit = "^2.2.1"
 aiohttp = "^3.9.1"
 tqdm = "^4.66.1"
 python-dotenv = "^1.0.0"
+
+# Web Framework & Database
+django = "^4.2.0"
+djangorestframework = "^3.14.0"
+django-cors-headers = "^4.3.0"
+psycopg2-binary = "^2.9.7"
+dj-database-url = "^2.1.0"
+whitenoise = "^6.5.0"
+gunicorn = "^21.2.0"
+
+# Cloud & Deployment  
+google-cloud-storage = "^2.10.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.0.0"

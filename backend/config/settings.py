@@ -185,13 +185,32 @@ REST_FRAMEWORK = {
 
 # CORS settings for frontend integration
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",  # React dev server
+    "http://localhost:3000",    # Create React App dev server
+    "http://localhost:5173",   # Vite dev server (your frontend!)
     "http://127.0.0.1:3000",
-    "http://localhost:8000",  # Django dev server
+    "http://127.0.0.1:5173",
+    "http://localhost:8000",   # Django dev server
     "http://127.0.0.1:8000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
+
+# For development - allow all origins (remove in production)
+if DEBUG:
+    CORS_ALLOW_ALL_ORIGINS = True
+
+# Allow specific headers for API requests
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
 # Add your Cloud Run URL when deployed
 if os.getenv('CORS_ALLOWED_ORIGINS'):

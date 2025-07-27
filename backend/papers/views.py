@@ -397,23 +397,41 @@ class StatsView(APIView):
     permission_classes = [AllowAny]
     
     def get(self, request):
+        # Get database-agnostic papers by year data
+        papers_by_year = {}
+        try:
+            # Try PostgreSQL syntax first
+            from django.db import connection
+            if 'postgresql' in connection.vendor:
+                papers_by_year = dict(
+                    Paper.objects.extra(
+                        select={'year': "EXTRACT(year FROM publication_date)"}
+                    ).values('year').annotate(count=Count('id')).order_by('year')
+                )
+            else:
+                # SQLite syntax fallback
+                papers_by_year = dict(
+                    Paper.objects.extra(
+                        select={'year': "strftime('%Y', publication_date)"}
+                    ).values('year').annotate(count=Count('id')).order_by('year')
+                )
+        except Exception as e:
+            # If both fail, just return empty dict
+            papers_by_year = {}
+
         stats = {
             'total_papers': Paper.objects.count(),
             'total_authors': Author.objects.count(),
             'total_collaborations': Collaboration.objects.count(),
             'total_collections': Collection.objects.count(),
             'papers_by_source': dict(Paper.objects.values_list('source').annotate(count=Count('id'))),
-            'papers_by_year': dict(
-                Paper.objects.extra(
-                    select={'year': "EXTRACT(year FROM publication_date)"}
-                ).values('year').annotate(count=Count('id')).order_by('year')
-            ),
-            'top_cited_papers': Paper.objects.order_by('-citations')[:10].values(
+            'papers_by_year': papers_by_year,
+            'top_cited_papers': list(Paper.objects.order_by('-citations')[:10].values(
                 'title', 'citations', 'publication_date'
-            ),
-            'most_productive_authors': Author.objects.annotate(
+            )),
+            'most_productive_authors': list(Author.objects.annotate(
                 paper_count=Count('paper')
-            ).order_by('-paper_count')[:10].values('name', 'paper_count')
+            ).order_by('-paper_count')[:10].values('name', 'paper_count'))
         }
         
         return Response(stats)
